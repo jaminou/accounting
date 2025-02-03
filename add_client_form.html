@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Client</title>
+    <style>
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: inline-block;
+            width: 120px;
+        }
+        input, select, textarea {
+            width: 200px;
+        }
+        textarea {
+            width: 300px;
+            height: 100px;
+        }
+    </style>
+    <script>
+        // JavaScript for filtering states
+        function filterStates() {
+            const input = document.getElementById("stateSearch").value.toUpperCase();
+            const options = document.getElementById("state").options;
+            for (let i = 0; i < options.length; i++) {
+                if (options[i].text.toUpperCase().indexOf(input) > -1) {
+                    options[i].style.display = "";
+                } else {
+                    options[i].style.display = "none";
+                }
+            }
+        }
+
+        // Load PriceLevels from the database
+        function loadPriceLevels() {
+            fetch('get_price_levels.php')
+                .then(response => response.json())
+                .then(data => {
+                    const priceLevelSelect = document.getElementById("priceLevel");
+                    priceLevelSelect.innerHTML = '<option value="">Select Price Level</option>';
+                    data.forEach(level => {
+                        const option = document.createElement("option");
+                        option.value = level.PriceLevelCode;
+                        option.text = `${level.PriceLevelCode} (${level.Margin}% Margin)`;
+                        priceLevelSelect.appendChild(option);
+                    });
+                });
+        }
+
+        // Load PriceLevels when the page loads
+        window.onload = loadPriceLevels;
+    </script>
+</head>
+<body>
+    <h1>Add Client</h1>
+    <form action="add_client.php" method="POST">
+        <!-- Title, First Name, Last Name -->
+        <div class="form-group">
+            <label for="title">Title:</label>
+            <select id="title" name="title">
+                <option value="">Select Title</option>
+                <option value="Mr">Mr</option>
+                <option value="Mrs">Mrs</option>
+                <option value="Ms">Ms</option>
+                <option value="Dr">Dr</option>
+                <option value="Jr">Jr</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" name="firstName" required>
+        </div>
+        <div class="form-group">
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" name="lastName" required>
+        </div>
+
+        <!-- Company Name -->
+        <div class="form-group">
+            <label for="companyName">Company Name:</label>
+            <input type="text" id="companyName" name="companyName">
+        </div>
+
+        <!-- Address, City, State, Zipcode -->
+        <div class="form-group">
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address">
+        </div>
+        <div class="form-group">
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city">
+        </div>
+        <div class="form-group">
+            <label for="stateSearch">Search State:</label>
+            <input type="text" id="stateSearch" oninput="filterStates()" placeholder="Type to search...">
+        </div>
+        <div class="form-group">
+            <label for="state">State:</label>
+            <select id="state" name="state">
+                <option value="">Select State</option>
+                <option value="AL">Alabama</option>
+                <option value="AK">Alaska</option>
+                <option value="AZ">Arizona</option>
+                <option value="AR">Arkansas</option>
+                <option value="CA">California</option>
+                <option value="CO">Colorado</option>
+                <option value="CT">Connecticut</option>
+                <option value="DE">Delaware</option>
+                <option value="FL">Florida</option>
+                <option value="GA">Georgia</option>
+                <option value="HI">Hawaii</option>
+                <option value="ID">Idaho</option>
+                <option value="IL">Illinois</option>
+                <option value="IN">Indiana</option>
+                <option value="IA">Iowa</option>
+                <option value="KS">Kansas</option>
+                <option value="KY">Kentucky</option>
+                <option value="LA">Louisiana</option>
+                <option value="ME">Maine</option>
+                <option value="MD">Maryland</option>
+                <option value="MA">Massachusetts</option>
+                <option value="MI">Michigan</option>
+                <option value="MN">Minnesota</option>
+                <option value="MS">Mississippi</option>
+                <option value="MO">Missouri</option>
+                <option value="MT">Montana</option>
+                <option value="NE">Nebraska</option>
+                <option value="NV">Nevada</option>
+                <option value="NH">New Hampshire</option>
+                <option value="NJ">New Jersey</option>
+                <option value="NM">New Mexico</option>
+                <option value="NY">New York</option>
+                <option value="NC">North Carolina</option>
+                <option value="ND">North Dakota</option>
+                <option value="OH">Ohio</option>
+                <option value="OK">Oklahoma</option>
+                <option value="OR">Oregon</option>
+                <option value="PA">Pennsylvania</option>
+                <option value="RI">Rhode Island</option>
+                <option value="SC">South Carolina</option>
+                <option value="SD">South Dakota</option>
+                <option value="TN">Tennessee</option>
+                <option value="TX">Texas</option>
+                <option value="UT">Utah</option>
+                <option value="VT">Vermont</option>
+                <option value="VA">Virginia</option>
+                <option value="WA">Washington</option>
+                <option value="WV">West Virginia</option>
+                <option value="WI">Wisconsin</option>
+                <option value="WY">Wyoming</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="zipcode">Zipcode:</label>
+            <input type="text" id="zipcode" name="zipcode" pattern="\d{5}(-\d{4})?" title="Enter a valid ZIP code (e.g., 12345 or 12345-6789)">
+        </div>
+
+        <!-- Phone, Email -->
+        <div class="form-group">
+            <label for="phone">Phone:</label>
+            <input type="tel" id="phone" name="phone" title="Enter a valid phone number (e.g., (123) 456-7890)">
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email">
+        </div>
+
+        <!-- Price Level -->
+        <div class="form-group">
+            <label for="priceLevel">Price Level:</label>
+            <select id="priceLevel" name="priceLevel"></select>
+        </div>
+
+        <!-- Reference -->
+        <div class="form-group">
+            <label for="reference">Reference:</label>
+            <textarea id="reference" name="reference"></textarea>
+        </div>
+
+        <!-- Account Term -->
+        <div class="form-group">
+            <label for="accountTerm">Account Term:</label>
+            <select id="accountTerm" name="accountTerm">
+                <option value="C.O.D">C.O.D</option>
+                <option value="10 Days">10 Days</option>
+                <option value="30 Days">30 Days</option>
+                <option value="60 Days">60 Days</option>
+            </select>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="form-group">
+            <button type="submit">Add Client</button>
+        </div>
+    </form>
+</body>
+</html>
